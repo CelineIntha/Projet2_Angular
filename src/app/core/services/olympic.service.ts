@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { OlympicCountry } from '../models/Olympic';
 
@@ -15,13 +15,13 @@ export class OlympicService {
 
   loadInitialData() {
     return this.http.get<OlympicCountry[]>(this.olympicUrl).pipe(
-      tap((value) => this.olympics$.next(value)),
-      catchError((error, caught) => {
+      tap((value) => this.olympics$.next(value)), // Met à jour le BehaviorSubject avec les données
+      catchError((error) => {
         // TODO: improve error handling
-        console.error(error);
+        console.error('Erreur lors du chargement des données :', error);
         // can be useful to end loading state and let the user know something went wrong
-        this.olympics$.next(null);
-        return caught;
+        this.olympics$.next(null); // Indique une erreur dans le BehaviorSubject
+        return of([]); // Retourne un tableau vide ou une valeur de substitution
       })
     );
   }
