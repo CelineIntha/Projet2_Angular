@@ -1,20 +1,26 @@
-
-<!-- <hr /><p>{{ (olympics$ | async)?.length }} data loaded</p> -->
-
+<!-- Informations générales -->
 <div class="container">
     <div class="number-container">
         <h3>Medals per Country</h3>
         <div class="first-box">
-          <p>Number of JOs</p>
+          <p>Number of Medals</p>
           <p>{{ totalMedals }}</p>
         </div>
         <div class="second-box">
-          <p>Number of countries</p>
+          <p>Number of Countries</p>
           <p>{{ totalCountries }}</p>
         </div>
-      </div>
-      
+    </div>
+    
+    <!-- Pie Chart -->
     <div class="pie">
-        <!--Mettre le pie ici-->
+        <ngx-charts-pie-chart 
+          [results]="pieChartData" 
+          [scheme]="colorScheme"
+          [legend]="true" 
+          [labels]="true"
+          [doughnut]="false"
+          [gradient]="true">
+        </ngx-charts-pie-chart>
     </div>
 </div>
