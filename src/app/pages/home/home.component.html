@@ -1,26 +1,20 @@
-<!-- Informations générales -->
 <div class="container">
+    <h2>Medals per Country</h2>
+
     <div class="number-container">
-        <h3>Medals per Country</h3>
         <div class="first-box">
-          <p>Number of Medals</p>
-          <p>{{ totalMedals }}</p>
+            <p>Number of JOs</p>
+            <p>{{ totalMedals }}</p>
         </div>
         <div class="second-box">
-          <p>Number of Countries</p>
-          <p>{{ totalCountries }}</p>
+            <p>Number of countries</p>
+            <p>{{ totalCountries }}</p>
         </div>
     </div>
-    
-    <!-- Pie Chart -->
+
     <div class="pie">
-        <ngx-charts-pie-chart 
-          [results]="pieChartData" 
-          [scheme]="colorScheme"
-          [legend]="true" 
-          [labels]="true"
-          [doughnut]="false"
-          [gradient]="true">
+        <ngx-charts-pie-chart [results]="pieChartData" [scheme]="colorScheme" [legend]="false" [doughnut]="false"
+            [labels]="true" [view]="view">
         </ngx-charts-pie-chart>
     </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { OlympicCountry } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
@@ -16,17 +16,24 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Données pour le graphique
   pieChartData: any[] = [];
-  // Définir colorScheme avec le type attendu
+
+  // Je définis colorScheme avec les données attendues
   colorScheme: Color = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+    domain: ['#793d52', '#89a1db', '#9780a1', '#bee0f1', '#b9cbe7', '#956065'],
     group: ScaleType.Ordinal,
     selectable: true,
     name: 'MedalsColorScheme'
   };
 
+  // Propriété pour la taille de la vue
+  view: [number, number];
+
   private subscription: Subscription = new Subscription();
 
-  constructor(private olympicService: OlympicService) { }
+  constructor(private olympicService: OlympicService) {
+    // Permet de définir la taille de la pie en fonction de la taille de l'écran
+    this.view = this.getViewSize(window.innerWidth);
+  }
 
   ngOnInit() {
     this.subscription.add(
@@ -45,6 +52,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Méthode pour obtenir la taille de la vue en fonction de la largeur de l'écran
+  private getViewSize(width: number): [number, number] {
+    if (width <= 768) {
+      return [420, 420]; 
+    } else {
+      return [600, 600]; 
+    }
+  }
+
+  // Écouteur d'événements pour ajuster la taille de la vue lors du redimensionnement de la fenêtre
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.view = this.getViewSize(event.target.innerWidth);
+  }
 
   calculateOlympicsData() {
     // Je vérifie si les données olympiques sont disponibles
@@ -85,7 +106,6 @@ export class HomeComponent implements OnInit, OnDestroy {
           0 // On commence avec 0 médailles au départ
         );
 
-
         // Je crée un objet avec le nom du pays et le total des médailles
         const countryData = {
           name: countryName,  // Nom du pays
@@ -105,8 +125,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-
   ngOnDestroy() {
-    this.subscription.unsubscribe(); // Bonne pratique, permet d'éviter les fuites de mémoire
+    this.subscription.unsubscribe(); // Cela permet d'éviter les fuites de mémoire
   }
 }
