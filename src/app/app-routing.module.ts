@@ -7,10 +7,12 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
+    title: 'Accueil'
   },
   {
     path: '**', // wildcard
     component: NotFoundComponent,
+    title: 'Page404'
   },
 ];
 
