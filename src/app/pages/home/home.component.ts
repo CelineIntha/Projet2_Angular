@@ -12,22 +12,16 @@ import { Color, ScaleType } from '@swimlane/ngx-charts';
 export class HomeComponent implements OnInit, OnDestroy {
   // Liste des pays olympiques, initialisée à null pour attendre les données
   olympics: OlympicCountry[] | null = null;
-
-  // Total des médailles obtenues par l'ensemble des pays
   totalMedals: number = 0;
-
-  // Total des pays participants aux jeux olympiques
   totalCountries: number = 0;
-
-  // Données pour le graphique en secteurs (camembert)
   pieChartData: any[] = [];
 
   // Schéma de couleur pour le graphique à secteurs, défini via ngx-charts
   colorScheme: Color = {
     domain: ['#793d52', '#89a1db', '#9780a1', '#bee0f1', '#b9cbe7', '#956065'],
-    group: ScaleType.Ordinal,  // Type de la palette de couleurs
-    selectable: true,          // Permet de sélectionner les couleurs
-    name: 'MedalsColorScheme'   // Nom du schéma de couleurs
+    group: ScaleType.Ordinal,
+    selectable: true,
+    name: 'MedalsColorScheme'
   };
 
   // Propriété définissant les dimensions de la vue pour le graphique
@@ -51,11 +45,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.olympicService.getOlympics().subscribe(data => {
         this.olympics = data;
-
-        // Appelle la méthode pour calculer le total des médailles et des pays
         this.calculateOlympicsData();
-
-        // Prépare les données pour le graphique en secteurs
         this.prepareChartData();
       })
     );
@@ -69,10 +59,8 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   private getViewSize(width: number): [number, number] {
     if (width <= 768) {
-      // Si la largeur de l'écran est inférieure ou égale à 768px, on renvoie une vue plus petite
       return [420, 420];
     } else {
-      // Sinon, on renvoie une vue plus grande
       return [600, 600];
     }
   }
