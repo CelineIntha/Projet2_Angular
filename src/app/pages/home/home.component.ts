@@ -10,14 +10,13 @@ import { Color, ScaleType } from '@swimlane/ngx-charts';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  // Liste des pays olympiques, initialisée à null pour attendre les données
   olympics: OlympicCountry[] | null = null;
   totalMedals: number = 0;
   totalCountries: number = 0;
-
-  // Données pour le graphique
   pieChartData: any[] = [];
 
-  // Je définis colorScheme avec les données attendues
+  // Schéma de couleur pour le graphique ngx-charts
   colorScheme: Color = {
     domain: ['#793d52', '#89a1db', '#9780a1', '#bee0f1', '#b9cbe7', '#956065'],
     group: ScaleType.Ordinal,
@@ -25,13 +24,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     name: 'MedalsColorScheme'
   };
 
-  // Propriété pour la taille de la vue
   view: [number, number];
 
+  // Subscription pour gérer les observables et éviter les fuites de mémoire
   private subscription: Subscription = new Subscription();
 
   constructor(private olympicService: OlympicService) {
-    // Permet de définir la taille de la pie en fonction de la taille de l'écran
+    // Définit la taille initiale du graphique en fonction de la taille de la fenêtre du navigateur
     this.view = this.getViewSize(window.innerWidth);
   }
 
@@ -40,92 +39,100 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.olympicService.loadInitialData().subscribe()
     );
 
-    // Abonnement à l'observable qui fournit les données des pays olympiques
     this.subscription.add(
       this.olympicService.getOlympics().subscribe(data => {
         this.olympics = data;
-
-        // Appelle la méthode pour calculer des données sur les pays olympiques
         this.calculateOlympicsData();
         this.prepareChartData();
       })
     );
   }
 
-  // Méthode pour obtenir la taille de la vue en fonction de la largeur de l'écran
+  /**
+   * Méthode privée pour obtenir la taille de la vue en fonction de la largeur de la fenêtre.
+   * Renvoie un tuple contenant la largeur et la hauteur du graphique.
+   * @param width - La largeur actuelle de la fenêtre du navigateur.
+   * @returns Un tableau avec la largeur et la hauteur du graphique [width, height].
+   */
   private getViewSize(width: number): [number, number] {
     if (width <= 768) {
-      return [420, 420]; 
+      return [420, 420];
     } else {
-      return [600, 600]; 
+      return [600, 600];
     }
   }
 
-  // Écouteur d'événements pour ajuster la taille de la vue lors du redimensionnement de la fenêtre
+  /**
+   * Gestionnaire d'événement pour ajuster la taille du graphique lorsque la fenêtre est redimensionnée.
+   * Il met à jour la propriété `view` en fonction de la nouvelle taille de l'écran.
+   * Utilise un décorateur `HostListener` pour écouter l'événement de redimensionnement de la fenêtre.
+   * @param event - L'événement de redimensionnement contenant la nouvelle taille de la fenêtre.
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.view = this.getViewSize(event.target.innerWidth);
   }
 
+  /**
+   * Méthode pour calculer le nombre total de pays participants et de médailles gagnées.
+   * Cette méthode parcourt chaque pays, puis parcourt les participations de chaque pays
+   * pour accumuler le total des médailles.
+   */
   calculateOlympicsData() {
-    // Je vérifie si les données olympiques sont disponibles
     if (this.olympics) {
-      // Je compte le nombre total de pays et l'assigne à totalCountries
-      this.totalCountries = this.olympics.length; // La propriété .length est utilisée pour obtenir le nombre d'éléments dans un tableau.
 
-      // J'initialise le compteur total de médailles à zéro
+      this.totalCountries = this.olympics.length;
+
       this.totalMedals = 0;
 
-      // Je parcours chaque pays dans le tableau olympics
       for (const country of this.olympics) {
-        // Pour chaque pays, je parcours ses participations 
         for (const participation of country.participations) {
-          // J'ajoute le nombre de médailles de chaque participation au total
           this.totalMedals += participation.medalsCount;
         }
       }
     }
   }
 
+  /**
+   * Prépare les données nécessaires pour le graphique.
+   * Cette méthode parcourt chaque pays et calcule le nombre total de médailles
+   * qu'il a gagné, puis formate les données pour qu'elles soient compatibles avec
+   * ngx-charts.
+   */
   prepareChartData() {
     if (this.olympics) {
-      // Initialise un tableau vide pour stocker les données du graphique
       const chartData: any[] = [];
 
-      // Parcours chaque pays dans le tableau olympics
       this.olympics.forEach(country => {
-
         const countryName = country.country;
 
-        // Je calcule le total des médailles pour un pays
         const totalMedalsForCountry = country.participations.reduce(
           (totalMedals, participation) => {
-            // Ajoute le nombre de médailles de chaque participation
             return totalMedals + participation.medalsCount;
           },
-          0 // On commence avec 0 médailles au départ
+          0 
         );
 
-        // Je crée un objet avec le nom du pays et le total des médailles
         const countryData = {
-          name: countryName,  // Nom du pays
-          value: totalMedalsForCountry  // Nombre total de médailles pour ce pays
+          name: countryName,
+          value: totalMedalsForCountry
         };
 
-        // Ajoute cet objet au tableau de données du graphique
         chartData.push(countryData);
       });
-
-      // Assigne le tableau de données formaté à la variable pieChartData
+      
       this.pieChartData = chartData;
-
     } else {
       // Si les données olympiques ne sont pas encore disponibles, assigne un tableau vide
       this.pieChartData = [];
     }
   }
 
+  /**
+   * Méthode appelée à la destruction du composant pour libérer les ressources.
+   * Désabonne tous les observables afin d'éviter des fuites de mémoire.
+   */
   ngOnDestroy() {
-    this.subscription.unsubscribe(); // Cela permet d'éviter les fuites de mémoire
+    this.subscription.unsubscribe();
   }
 }
