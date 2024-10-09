@@ -16,7 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   totalCountries: number = 0;
   pieChartData: any[] = [];
 
-  // Schéma de couleur pour le graphique à secteurs, défini via ngx-charts
+  // Schéma de couleur pour le graphique ngx-charts
   colorScheme: Color = {
     domain: ['#793d52', '#89a1db', '#9780a1', '#bee0f1', '#b9cbe7', '#956065'],
     group: ScaleType.Ordinal,
@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     name: 'MedalsColorScheme'
   };
 
-  // Propriété définissant les dimensions de la vue pour le graphique
   view: [number, number];
 
   // Subscription pour gérer les observables et éviter les fuites de mémoire
@@ -36,12 +35,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Charge les données initiales des Jeux Olympiques
     this.subscription.add(
       this.olympicService.loadInitialData().subscribe()
     );
 
-    // S'abonne à l'observable pour obtenir les données des pays olympiques
     this.subscription.add(
       this.olympicService.getOlympics().subscribe(data => {
         this.olympics = data;
@@ -83,17 +80,13 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   calculateOlympicsData() {
     if (this.olympics) {
-      // Nombre total de pays participants
+
       this.totalCountries = this.olympics.length;
 
-      // Réinitialise le compteur total de médailles
       this.totalMedals = 0;
 
-      // Parcourt chaque pays
       for (const country of this.olympics) {
-        // Parcourt les participations de chaque pays
         for (const participation of country.participations) {
-          // Ajoute le nombre de médailles de chaque participation au total
           this.totalMedals += participation.medalsCount;
         }
       }
@@ -108,32 +101,26 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   prepareChartData() {
     if (this.olympics) {
-      // Initialise un tableau vide pour stocker les données formatées
       const chartData: any[] = [];
 
-      // Parcourt chaque pays
       this.olympics.forEach(country => {
         const countryName = country.country;
 
-        // Calcule le total des médailles pour le pays
         const totalMedalsForCountry = country.participations.reduce(
           (totalMedals, participation) => {
             return totalMedals + participation.medalsCount;
           },
-          0 // Valeur initiale du total de médailles (0)
+          0 
         );
 
-        // Crée un objet contenant le nom du pays et son total de médailles
         const countryData = {
           name: countryName,
           value: totalMedalsForCountry
         };
 
-        // Ajoute les données formatées au tableau des données du graphique
         chartData.push(countryData);
       });
-
-      // Assigne les données préparées à la propriété `pieChartData`
+      
       this.pieChartData = chartData;
     } else {
       // Si les données olympiques ne sont pas encore disponibles, assigne un tableau vide
