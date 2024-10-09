@@ -1,12 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-country-detail',
-  standalone: true,
-  imports: [],
   templateUrl: './country-detail.component.html',
-  styleUrl: './country-detail.component.scss'
+  styleUrls: ['./country-detail.component.scss'],
 })
-export class CountryDetailComponent {
+export class CountryDetailComponent implements OnInit {
+  countryName: string = '';
 
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.route.params.subscribe((params) => {
+      this.countryName = params['countryName'];
+    });
+  }
 }

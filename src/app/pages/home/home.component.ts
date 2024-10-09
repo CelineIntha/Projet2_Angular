@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { OlympicCountry } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -29,7 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Subscription pour gérer les observables et éviter les fuites de mémoire
   private subscription: Subscription = new Subscription();
 
-  constructor(private olympicService: OlympicService) {
+  constructor(private olympicService: OlympicService, private router: Router) {
     // Définit la taille initiale du graphique en fonction de la taille de la fenêtre du navigateur
     this.view = this.getViewSize(window.innerWidth);
   }
@@ -110,7 +111,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           (totalMedals, participation) => {
             return totalMedals + participation.medalsCount;
           },
-          0 
+          0
         );
 
         const countryData = {
@@ -120,13 +121,23 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         chartData.push(countryData);
       });
-      
+
       this.pieChartData = chartData;
     } else {
-      // Si les données olympiques ne sont pas encore disponibles, assigne un tableau vide
       this.pieChartData = [];
     }
   }
+
+  /**
+ * Méthode pour récupérer le pays et le rédiriger vers la page détail 
+ * avec le nom du pays.
+ */
+
+  onSelect(event: any): void {
+    const countryName = event.name;
+    this.router.navigate(['/country', countryName]);
+  }
+
 
   /**
    * Méthode appelée à la destruction du composant pour libérer les ressources.

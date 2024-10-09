@@ -11,17 +11,12 @@ const routes: Routes = [
     title: 'Home'
   },
   {
-    path: 'country',
-    component: CountryDetailComponent,
-    title: 'Country'
-  },
-  {
     path: 'country/:countryName',
     component: CountryDetailComponent,
-    title: 'Country Détail'
+    title: 'Country Detail'
   },
   {
-    path: '**', // wildcard
+    path: '**',
     component: NotFoundComponent,
     title: 'Page404'
   },
