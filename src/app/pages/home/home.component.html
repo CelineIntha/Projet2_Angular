@@ -14,7 +14,7 @@
 
     <div class="pie">
         <ngx-charts-pie-chart [results]="pieChartData" [scheme]="colorScheme" [legend]="false" [doughnut]="false"
-            [labels]="true" [view]="view">
+            [labels]="true" [view]="view" (select)="onSelect($event)">
         </ngx-charts-pie-chart>
     </div>
 </div>

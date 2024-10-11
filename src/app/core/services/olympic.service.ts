@@ -29,4 +29,22 @@ export class OlympicService {
   getOlympics() {
     return this.olympics$.asObservable();
   }
+
+  getCountryDataWithTotalMedals(countryName: string): { country: OlympicCountry | null, totalMedals: number } {
+    const olympicCountries = this.olympics$.getValue();
+    if (!olympicCountries) return { country: null, totalMedals: 0 };
+
+    const selectedCountry = olympicCountries.find(country => country.country === countryName);
+
+    if (!selectedCountry) return { country: null, totalMedals: 0 };
+
+    const totalMedals = selectedCountry.participations.reduce((totalMedals, participation) => {
+      return totalMedals + participation.medalsCount;
+    }, 0);
+
+    return { country: selectedCountry, totalMedals };
+  }
 }
+
+
+
