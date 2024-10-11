@@ -22,6 +22,7 @@ export class OlympicService {
         // can be useful to end loading state and let the user know something went wrong
         this.olympics$.next(null); // Indique une erreur dans le BehaviorSubject
         return of([]); // Retourne un tableau vide ou une valeur de substitution
+        // Todo: Via un component afficher une erreur
       })
     );
   }
@@ -30,6 +31,7 @@ export class OlympicService {
     return this.olympics$.asObservable();
   }
 
+  //getOlympicsByCountry : retourner un olympic avec un objet
   getCountryDataWithTotalMedals(countryName: string): { country: OlympicCountry | null, totalMedals: number } {
     const olympicCountries = this.olympics$.getValue();
     if (!olympicCountries) return { country: null, totalMedals: 0 };

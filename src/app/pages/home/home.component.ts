@@ -13,11 +13,11 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit, OnDestroy {
   // Liste des pays olympiques, initialisée à null pour attendre les données
   olympics: OlympicCountry[] | null = null;
-  totalMedals: number = 0;
+  totalJO: number = 0;
   totalCountries: number = 0;
-  pieChartData: any[] = [];
 
-  // Schéma de couleur pour le graphique ngx-charts
+  pieChartData: { name: string, value: number }[] = [];
+
   colorScheme: Color = {
     domain: ['#793d52', '#89a1db', '#9780a1', '#bee0f1', '#b9cbe7', '#956065'],
     group: ScaleType.Ordinal,
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   view: [number, number];
 
-  // Subscription pour gérer les observables et éviter les fuites de mémoire
+  // Subscription pour gérer les observables
   private subscription: Subscription = new Subscription();
 
   constructor(private olympicService: OlympicService, private router: Router) {
@@ -36,10 +36,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscription.add(
-      this.olympicService.loadInitialData().subscribe()
-    );
-
     this.subscription.add(
       this.olympicService.getOlympics().subscribe(data => {
         this.olympics = data;
@@ -70,27 +66,19 @@ export class HomeComponent implements OnInit, OnDestroy {
    * @param event - L'événement de redimensionnement contenant la nouvelle taille de la fenêtre.
    */
   @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    this.view = this.getViewSize(event.target.innerWidth);
+  onResize(event: Event) {
+    const target = event.target as Window;
+    this.view = this.getViewSize(target.innerWidth);
   }
 
   /**
-   * Méthode pour calculer le nombre total de pays participants et de médailles gagnées.
-   * Cette méthode parcourt chaque pays, puis parcourt les participations de chaque pays
-   * pour accumuler le total des médailles.
+   * Méthode pour calculer le nombre total de pays participants et de Jeux Olympiques (JO).
+   * Cette méthode parcourt chaque pays et compte le nombre de participations pour accumuler le total des JO.
    */
   calculateOlympicsData() {
     if (this.olympics) {
-
       this.totalCountries = this.olympics.length;
-
-      this.totalMedals = 0;
-
-      for (const country of this.olympics) {
-        for (const participation of country.participations) {
-          this.totalMedals += participation.medalsCount;
-        }
-      }
+      this.totalJO = this.olympics.reduce((total, country) => total + country.participations.length, 0);
     }
   }
 
@@ -102,42 +90,30 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   prepareChartData() {
     if (this.olympics) {
-      const chartData: any[] = [];
-
-      this.olympics.forEach(country => {
-        const countryName = country.country;
-
+      this.pieChartData = this.olympics.map(country => {
         const totalMedalsForCountry = country.participations.reduce(
-          (totalMedals, participation) => {
-            return totalMedals + participation.medalsCount;
-          },
+          (totalMedals, participation) => totalMedals + participation.medalsCount,
           0
         );
 
-        const countryData = {
-          name: countryName,
+        return {
+          name: country.country,
           value: totalMedalsForCountry
         };
-
-        chartData.push(countryData);
       });
-
-      this.pieChartData = chartData;
     } else {
       this.pieChartData = [];
     }
   }
 
   /**
- * Méthode pour récupérer le pays et le rédiriger vers la page détail 
- * avec le nom du pays.
- */
-
-  onSelect(event: any): void {
+   * Méthode pour récupérer le pays et le rédiriger vers la page détail 
+   * avec le nom du pays.
+   */
+  onSelect(event: { name: string }): void {
     const countryName = event.name;
     this.router.navigate(['/country', countryName]);
   }
-
 
   /**
    * Méthode appelée à la destruction du composant pour libérer les ressources.

@@ -4,7 +4,7 @@
     <div class="number-container">
         <div class="first-box">
             <p>Number of JOs</p>
-            <p>{{ totalMedals }}</p>
+            <p>{{ totalJO }}</p>
         </div>
         <div class="second-box">
             <p>Number of countries</p>
@@ -16,5 +16,7 @@
         <ngx-charts-pie-chart [results]="pieChartData" [scheme]="colorScheme" [legend]="false" [doughnut]="false"
             [labels]="true" [view]="view" (select)="onSelect($event)">
         </ngx-charts-pie-chart>
+        <!--ngx tool tip pour insérer une image car il manque l'icône de la médaille-->
+        <!-- gérer avec le CSS la couleur de fond-->
     </div>
 </div>

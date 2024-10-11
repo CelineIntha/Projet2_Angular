@@ -55,6 +55,9 @@ export class CountryDetailComponent implements OnInit {
     const { country, totalMedals } = this.olympicService.getCountryDataWithTotalMedals(countryName);
 
     // Je vérifie si le pays existe avant de charger les données
+
+    // Faire les calculs ici, soit l'un soit l'autre mais c'est mieux dans le component
+    // Ajouter des méthodes pour calculer chaque métrique (total athlètes, nombre de métailles, nombre d'entrées)
     if (country) {
       this.totalMedals = totalMedals;
       this.numberOfEntries = country.participations.length;
@@ -67,8 +70,8 @@ export class CountryDetailComponent implements OnInit {
     }
   }
 
-
   prepareLineChartData(countryData: any) {
+    // éviter les any
     const lineData = countryData.participations.map((participation: any) => {
       return {
         name: participation.year.toString(), 
