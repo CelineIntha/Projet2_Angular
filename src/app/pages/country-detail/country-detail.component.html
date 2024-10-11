@@ -1,1 +1,38 @@
-<h2> {{ countryName }}</h2>
+<div class="container">
+    <button routerLink="/">Return to dashboard</button>
+    <h2>{{ countryName }}</h2>
+  
+    <div class="stats">
+      <div class="stat-box">
+        <p>Number of entries</p>
+        <p>{{ numberOfEntries }}</p>
+      </div>
+      <div class="stat-box">
+        <p>Total number of medals</p>
+        <p>{{ totalMedals }}</p>
+      </div>
+      <div class="stat-box">
+        <p>Total number of athletes</p>
+        <p>{{ totalAthletes }}</p>
+      </div>
+    </div>
+  
+    <div class="chart-container">
+        <ngx-charts-line-chart
+        [view]="view"
+        [scheme]="colorScheme"
+        [legend]="legend"
+        [showXAxisLabel]="showXAxisLabel"
+        [showYAxisLabel]="showYAxisLabel"
+        [xAxis]="xAxis"
+        [yAxis]="yAxis"
+        [xAxisLabel]="xAxisLabel"
+        [yAxisLabel]="yAxisLabel"
+        [timeline]="timeline"
+        [results]="lineChartData">
+      </ngx-charts-line-chart>
+      
+      </div>
+      
+  </div>
+  
