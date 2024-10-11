@@ -15,18 +15,18 @@ $secondary-color: #d7eaec;
         display: flex;
         align-items: center;
         background-color: $primary-color;
-        font-size: 2em; 
+        font-size: 2em;
         max-height: 20px;
         color: white;
         padding: 16px;
         font-weight: 400;
         border-radius: 14px;
-        margin-bottom: 20px; 
+        margin-bottom: 20px;
     }
 
     .number-container {
         display: flex;
-        flex-wrap: wrap; 
+        flex-wrap: wrap;
         justify-content: center;
         align-items: center;
         gap: 40px;
@@ -37,43 +37,42 @@ $secondary-color: #d7eaec;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            border: 2px solid $primary-color; 
-            min-height: 60px; 
-            padding: 10px; 
-            border-radius: 8px; 
-            width: 190px; 
+            border: 2px solid $primary-color;
+            min-height: 60px;
+            padding: 10px;
+            border-radius: 8px;
+            width: 190px;
             text-align: center;
 
             p {
                 margin: 0;
-                font-size: 1.125em; 
+                font-size: 1.125em;
 
                 &:last-child {
-                    margin-top: 6px; 
+                    margin-top: 6px;
                     font-weight: bold;
-                    font-size: 1.875em; 
+                    font-size: 1.875em;
                 }
             }
         }
     }
 
-    
 }
 
 @media (max-width: 768px) {
     h2 {
-        font-size: 1.5em; 
+        font-size: 1.5em;
         min-height: 50px;
     }
 
     .number-container {
-        gap: 20px; 
+        gap: 20px;
     }
 
     .first-box,
     .second-box {
-        width: 100%; 
-        max-width: 300px; 
+        width: 100%;
+        max-width: 300px;
     }
 
     .pie {

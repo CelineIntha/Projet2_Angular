@@ -1,22 +1,27 @@
 <div class="container">
-    <h2>Medals per Country</h2>
+  <h2>Medals per Country</h2>
 
-    <div class="number-container">
-        <div class="first-box">
-            <p>Number of JOs</p>
-            <p>{{ totalJO }}</p>
-        </div>
-        <div class="second-box">
-            <p>Number of countries</p>
-            <p>{{ totalCountries }}</p>
-        </div>
+  <div class="number-container">
+    <div class="first-box">
+      <p>Number of JOs</p>
+      <p>{{ totalJO }}</p>
     </div>
+    <div class="second-box">
+      <p>Number of countries</p>
+      <p>{{ totalCountries }}</p>
+    </div>
+  </div>
 
-    <div class="pie">
-        <ngx-charts-pie-chart [results]="pieChartData" [scheme]="colorScheme" [legend]="false" [doughnut]="false"
-            [labels]="true" [view]="view" (select)="onSelect($event)">
-        </ngx-charts-pie-chart>
-        <!--ngx tool tip pour insérer une image car il manque l'icône de la médaille-->
-        <!-- gérer avec le CSS la couleur de fond-->
-    </div>
+  <!-- Pie Chart -->
+  <ngx-charts-pie-chart
+    (select)="onSelect($event)"
+    [doughnut]="false"
+    [labels]="true"
+    [legend]="false"
+    [results]="pieChartData"
+    [scheme]="colorScheme"
+    [view]="view">
+  </ngx-charts-pie-chart>
+    <!--    [tooltipText]="customTooltipFormatter"-->
+
 </div>
