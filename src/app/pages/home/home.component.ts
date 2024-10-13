@@ -1,18 +1,18 @@
-import {Component, OnDestroy, OnInit, HostListener} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {OlympicCountry} from 'src/app/core/models/Olympic';
-import {OlympicService} from 'src/app/core/services/olympic.service';
-import {Color, ScaleType} from '@swimlane/ngx-charts';
-import {Router} from '@angular/router';
-import {ChartData} from "../../core/models/ChartData";
+import {Component, OnDestroy, OnInit, HostListener, ViewEncapsulation} from '@angular/core';
+import { Subscription } from 'rxjs';
+import { OlympicCountry } from 'src/app/core/models/Olympic';
+import { OlympicService } from 'src/app/core/services/olympic.service';
+import { Color, ScaleType } from '@swimlane/ngx-charts';
+import { Router } from '@angular/router';
+import {TooltipData} from "../../core/models/TooltipData";
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  // Liste des pays olympiques, initialisée à null pour attendre les données
   olympics: OlympicCountry[] | null = null;
   totalJO: number = 0;
   totalCountries: number = 0;
@@ -89,9 +89,6 @@ export class HomeComponent implements OnInit, OnDestroy {
           value: totalMedalsForCountry
         };
       });
-      // A enlever
-      console.log(this.pieChartData);
-
     } else {
       this.pieChartData = [];
     }
@@ -106,14 +103,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/country', countryName]);
   }
 
-//   customTooltipFormatter(data: { name: string; value: number }): string {
-//   return `
-//     <div class="custom-tooltip">
-//       <i class="fas fa-medal"></i>
-//       ${data.name} - ${data.value} Medals
-//     </div>
-//   `;
-// }
+customTooltipData(data: TooltipData): string {
+  return `
+    <div class="custom-tooltip">
+      ${data.data.name || 'Country'}<br>
+      <i class="fas fa-medal"></i>  ${data.data.value || 0}
+    </div>
+  `;
+}
 
   /**
    * Méthode appelée à la destruction du composant pour libérer les ressources.

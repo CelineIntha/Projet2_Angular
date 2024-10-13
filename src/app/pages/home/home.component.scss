@@ -57,7 +57,11 @@ $secondary-color: #d7eaec;
         }
     }
 
+  .tooltip-caret.position-bottom {
+    border-bottom-color: $primary-color !important;
+  }
 }
+
 
 @media (max-width: 768px) {
     h2 {
