@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Color, ScaleType } from '@swimlane/ngx-charts';
-import { OlympicService } from 'src/app/core/services/olympic.service';
+import {Component, OnInit, HostListener} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {Color, ScaleType} from '@swimlane/ngx-charts';
+import {OlympicService} from 'src/app/core/services/olympic.service';
 
 @Component({
   selector: 'app-country-detail',
@@ -14,21 +14,19 @@ export class CountryDetailComponent implements OnInit {
   numberOfEntries: number = 0;
   totalAthletes: number = 0;
 
-
   // Configuration des options pour le graphique
   lineChartData: any[] = [];
   view: [number, number] = [700, 400];
 
   colorScheme: Color = {
     name: 'MedalsColorScheme',
-    selectable: true, 
-    group: ScaleType.Ordinal,  
-    domain: ['#02838F', '#FF5733', '#33FF57'] 
+    selectable: true,
+    group: ScaleType.Ordinal,
+    domain: ['#02838F', '#FF5733', '#33FF57']
   };
-  
+
   // Options pour le graphique
   legend: boolean = true;
-  showLabels: boolean = true;
   animations: boolean = true;
   xAxis: boolean = true;
   yAxis: boolean = true;
@@ -38,9 +36,13 @@ export class CountryDetailComponent implements OnInit {
   yAxisLabel: string = 'Number of Medals';
   timeline: boolean = true;
 
-  constructor(private route: ActivatedRoute, private olympicService: OlympicService) {}
+  constructor(private route: ActivatedRoute, private olympicService: OlympicService) {
+  }
 
   ngOnInit(): void {
+    // Permet de gérer automatiquement la taille de la line chart en fonction de la taille de l'écran
+    this.view = this.getViewSize(window.innerWidth);
+
     // S'abonner aux données des JO
     this.olympicService.getOlympics().subscribe(() => {
       // Ensuite, je recupère le nom du pays à partir des paramètres de la route
@@ -52,12 +54,9 @@ export class CountryDetailComponent implements OnInit {
   }
 
   loadCountryData(countryName: string) {
-    const { country, totalMedals } = this.olympicService.getCountryDataWithTotalMedals(countryName);
+    const {country, totalMedals} = this.olympicService.getCountryDataWithTotalMedals(countryName);
 
     // Je vérifie si le pays existe avant de charger les données
-
-    // Faire les calculs ici, soit l'un soit l'autre mais c'est mieux dans le component
-    // Ajouter des méthodes pour calculer chaque métrique (total athlètes, nombre de métailles, nombre d'entrées)
     if (country) {
       this.totalMedals = totalMedals;
       this.numberOfEntries = country.participations.length;
@@ -71,20 +70,35 @@ export class CountryDetailComponent implements OnInit {
   }
 
   prepareLineChartData(countryData: any) {
-    // éviter les any
     const lineData = countryData.participations.map((participation: any) => {
       return {
-        name: participation.year.toString(), 
-        value: participation.medalsCount   
+        name: participation.year.toString(),
+        value: participation.medalsCount
       };
     });
 
     this.lineChartData = [
       {
-        name: this.countryName,  
-        series: lineData 
+        name: this.countryName,
+        series: lineData
       }
     ];
   }
+
+  // Me permet de capturer l'écran et d'ajuster la taille de la line chart
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    const target = event.target as Window;
+    this.view = this.getViewSize(target.innerWidth); // Je mets à jour la line chart
+  }
+
+  private getViewSize(width: number): [number, number] {
+    if (width <= 768) {
+      return [420, 420];
+    } else {
+      return [700, 400];
+    }
+  }
+
   //TODO : Unsubscribe
 }
