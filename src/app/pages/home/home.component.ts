@@ -1,16 +1,15 @@
 import {Component, OnDestroy, OnInit, HostListener, ViewEncapsulation} from '@angular/core';
-import { Subscription } from 'rxjs';
-import { OlympicCountry } from 'src/app/core/models/Olympic';
-import { OlympicService } from 'src/app/core/services/olympic.service';
-import { Color, ScaleType } from '@swimlane/ngx-charts';
-import { Router } from '@angular/router';
+import {Subscription} from 'rxjs';
+import {OlympicCountry} from 'src/app/core/models/Olympic';
+import {OlympicService} from 'src/app/core/services/olympic.service';
+import {Color, ScaleType} from '@swimlane/ngx-charts';
+import {Router} from '@angular/router';
 import {TooltipData} from "../../core/models/TooltipData";
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class HomeComponent implements OnInit, OnDestroy {
   olympics: OlympicCountry[] | null = null;
@@ -103,14 +102,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/country', countryName]);
   }
 
-customTooltipData(data: TooltipData): string {
-  return `
-    <div class="custom-tooltip">
+  customTooltipData(data: TooltipData): string {
+    return `
+    <div class="tooltip">
       ${data.data.name || 'Country'}<br>
-      <i class="fas fa-medal"></i>  ${data.data.value || 0}
+      <i class="fas fa-medal"></i> ${data.data.value || 0}
     </div>
   `;
-}
+  }
+
 
   /**
    * Méthode appelée à la destruction du composant pour libérer les ressources.

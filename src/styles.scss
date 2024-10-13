@@ -1,5 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
 body {
-    font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
+}
+
+ngx-tooltip-content.ngx-charts-tooltip-content {
+  background-color: #02838F !important;
+  color: white !important;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+ngx-tooltip-content.ngx-charts-tooltip-content .tooltip-caret.position-top {
+  border-top-color: #02838F !important;
+}
+
+ngx-tooltip-content.ngx-charts-tooltip-content .tooltip-caret.position-bottom {
+  border-bottom-color: #02838F !important;
+}
+
+.tooltip {
+  font-size: 15px;
+  padding: 8px;
+
+  .tooltip .country-name {
+    font-size: 15px;
   }
-  
+
+  .tooltip .medal-count {
+    font-size: 15px;
+    margin-left: 4px;
+  }
+}
