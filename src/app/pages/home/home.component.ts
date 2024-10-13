@@ -1,17 +1,18 @@
-import { Component, OnDestroy, OnInit, HostListener } from '@angular/core';
+import {Component, OnDestroy, OnInit, HostListener, ViewEncapsulation} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { OlympicCountry } from 'src/app/core/models/Olympic';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
 import { Router } from '@angular/router';
+import {TooltipData} from "../../core/models/TooltipData";
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  // Liste des pays olympiques, initialisée à null pour attendre les données
   olympics: OlympicCountry[] | null = null;
   totalJO: number = 0;
   totalCountries: number = 0;
@@ -26,6 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   };
 
   view: [number, number];
+
 
   // Subscription pour gérer les observables
   private subscription: Subscription = new Subscription();
@@ -43,20 +45,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.prepareChartData();
       })
     );
-  }
-
-  /**
-   * Méthode privée pour obtenir la taille de la vue en fonction de la largeur de la fenêtre.
-   * Renvoie un tuple contenant la largeur et la hauteur du graphique.
-   * @param width - La largeur actuelle de la fenêtre du navigateur.
-   * @returns Un tableau avec la largeur et la hauteur du graphique [width, height].
-   */
-  private getViewSize(width: number): [number, number] {
-    if (width <= 768) {
-      return [420, 420];
-    } else {
-      return [600, 600];
-    }
   }
 
   /**
@@ -107,7 +95,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Méthode pour récupérer le pays et le rédiriger vers la page détail 
+   * Méthode pour récupérer le pays et le rédiriger vers la page détail
    * avec le nom du pays.
    */
   onSelect(event: { name: string }): void {
@@ -115,11 +103,34 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.router.navigate(['/country', countryName]);
   }
 
+customTooltipData(data: TooltipData): string {
+  return `
+    <div class="custom-tooltip">
+      ${data.data.name || 'Country'}<br>
+      <i class="fas fa-medal"></i>  ${data.data.value || 0}
+    </div>
+  `;
+}
+
   /**
    * Méthode appelée à la destruction du composant pour libérer les ressources.
    * Désabonne tous les observables afin d'éviter des fuites de mémoire.
    */
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  /**
+   * Méthode privée pour obtenir la taille de la vue en fonction de la largeur de la fenêtre.
+   * Renvoie un tuple contenant la largeur et la hauteur du graphique.
+   * @param width - La largeur actuelle de la fenêtre du navigateur.
+   * @returns Un tableau avec la largeur et la hauteur du graphique [width, height].
+   */
+  private getViewSize(width: number): [number, number] {
+    if (width <= 768) {
+      return [420, 420];
+    } else {
+      return [600, 600];
+    }
   }
 }
