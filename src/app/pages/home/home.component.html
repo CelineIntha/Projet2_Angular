@@ -1,16 +1,22 @@
 <div class="container">
   <h1 class="main-title">Medals per Country</h1>
 
-  <div class="box-container">
-    <div class="first-box">
-      <p>Number of JOs</p>
-      <p>{{ totalJO }}</p>
+  @if ((errorMessage) && (isLoading)) {
+    <div class="error-message">
+      <p>{{ errorMessage }}</p>
     </div>
-    <div class="second-box">
-      <p>Number of countries</p>
-      <p>{{ totalCountries }}</p>
+  } @else {
+    <div class="box-container">
+      <div class="first-box">
+        <p>Number of JOs</p>
+        <p>{{ totalJO }}</p>
+      </div>
+      <div class="second-box">
+        <p>Number of countries</p>
+        <p>{{ totalCountries }}</p>
+      </div>
     </div>
-  </div>
+  }
 
   <!-- Pie Chart -->
   <ngx-charts-pie-chart
@@ -23,5 +29,4 @@
     [scheme]="colorScheme"
     [view]="view">
   </ngx-charts-pie-chart>
-
 </div>
