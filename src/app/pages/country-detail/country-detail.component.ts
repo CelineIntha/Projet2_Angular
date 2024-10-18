@@ -34,7 +34,7 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
     domain: ['#02838F', '#FF5733', '#33FF57']
   };
 
-  legend: boolean = true;
+  legend: boolean = false;
   animations: boolean = true;
   xAxis: boolean = true;
   yAxis: boolean = true;
