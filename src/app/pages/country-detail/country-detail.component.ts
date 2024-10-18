@@ -1,10 +1,12 @@
 import {Component, OnInit, OnDestroy, HostListener} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Color, ScaleType} from '@swimlane/ngx-charts';
 import {OlympicService} from 'src/app/core/services/olympic.service';
 import {Subscription} from 'rxjs';
 import {OlympicCountry} from "../../core/models/Olympic";
 import {Participation} from "../../core/models/Participation";
+import {HttpErrorResponse} from "@angular/common/http";
+import {LineChartData} from "../../core/models/LineChartData";
 
 @Component({
   selector: 'app-country-detail',
@@ -18,9 +20,11 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
   totalMedals: number = 0;
   numberOfEntries: number = 0;
   totalAthletes: number = 0;
+  errorMessage: string | null = null;
+  isLoading: boolean = true
 
   // Configuration des options pour le graphique
-  lineChartData: any[] = [];
+  lineChartData: LineChartData[] = [];
   view: [number, number] = [700, 400];
 
   colorScheme: Color = {
@@ -42,6 +46,7 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private olympicService: OlympicService
   ) {
   }
@@ -57,8 +62,12 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
     this.subscription.add(routeSubscription);
   }
 
-  loadCountryData(countryName: string) {
-    const olympicsSubscription = this.olympicService.getOlympics().subscribe((olympicCountries: OlympicCountry[] | null) => {
+loadCountryData(countryName: string) {
+  this.isLoading = true;
+
+  const olympicsSubscription = this.olympicService.getOlympics().subscribe({
+    next: (olympicCountries: OlympicCountry[] | null) => {
+      this.isLoading = false;
       if (olympicCountries) {
         const selectedCountry = olympicCountries.find(country => country.country === countryName);
         if (selectedCountry) {
@@ -68,12 +77,29 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
           this.prepareLineChartData(selectedCountry);
         } else {
           console.error(`Aucune donnée trouvée pour le pays: ${countryName}`);
-          // TODO: Afficher un message d'erreur ou rediriger l'utilisateur
+          this.router.navigate(['/404']);
         }
+      } else {
+        this.errorMessage = 'Erreur lors du chargement des données.';
       }
-    });
-    this.subscription.add(olympicsSubscription);
-  }
+    },
+    error: (error: HttpErrorResponse) => {
+      this.isLoading = false;
+      console.error('Erreur lors de la récupération des données:', error);
+      if (error.status === 404) {
+        this.errorMessage = `Le pays ${countryName} n'existe pas.`;
+      } else {
+        this.errorMessage = 'Impossible de charger les données. Veuillez réessayer.';
+      }
+    },
+    complete: () => {
+      console.log('Chargement des données terminé.');
+    }
+  });
+
+  this.subscription.add(olympicsSubscription);
+}
+
 
   // Méthode pour calculer le total des médailles
   calculateTotalMedals(country: OlympicCountry): number {

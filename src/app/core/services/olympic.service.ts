@@ -14,13 +14,13 @@ export class OlympicService {
   constructor(private http: HttpClient) {}
 
   // Méthode pour charger les données depuis le fichier JSON
-  loadInitialData(): Observable<OlympicCountry[]> {
+  loadInitialData(): Observable<OlympicCountry[] | null> {
     return this.http.get<OlympicCountry[]>(this.olympicUrl).pipe(
       tap((data) => this.olympics$.next(data)), // Met à jour les données du BehaviorSubject
       catchError((error) => {
         console.error('Erreur lors du chargement des données :', error);
         this.olympics$.next(null); // Indique une erreur
-        return of([]); // Retourne un tableau vide en cas d'erreur
+        return of(null);
       })
     );
   }

@@ -1,6 +1,12 @@
 <div class="container">
   <h1 class="main-title">Medals per Country</h1>
 
+  @if (isLoading) {
+    <div class="loading">
+      <p>Chargement des données...</p>
+    </div>
+  }
+
   @if ((errorMessage) && (isLoading)) {
     <div class="error-message">
       <p>{{ errorMessage }}</p>

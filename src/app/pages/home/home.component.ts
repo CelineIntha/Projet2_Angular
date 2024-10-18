@@ -57,7 +57,7 @@ ngOnInit() {
             this.calculateOlympicsData();
             this.prepareChartData();
           } else {
-            this.errorMessage = 'Aucune donnée disponible pour le moment.';
+            this.errorMessage = 'Impossible de charger les données des Jeux Olympiques. Veuillez réessayer plus tard.';
           }
         })
     );
