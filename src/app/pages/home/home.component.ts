@@ -82,6 +82,7 @@ ngOnInit() {
   calculateOlympicsData() {
     if (this.olympics) {
       this.totalCountries = this.olympics.length;
+      // Nombre d'entrées aux JO, donc se baser sur l'année
       this.totalJO = this.olympics.reduce((total, country) => total + country.participations.length, 0);
     }
   }

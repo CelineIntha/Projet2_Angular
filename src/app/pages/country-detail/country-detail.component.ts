@@ -120,6 +120,7 @@ loadCountryData(countryName: string) {
       };
     });
 
+    // Todo: Enlever légende
     this.lineChartData = [
       {
         name: this.countryName,
