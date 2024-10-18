@@ -1,0 +1,17 @@
+.main-title {
+  span {
+    margin-left: 6px;
+  }
+}
+.first-box,
+.second-box, .third-box {
+  min-height: 20px;
+  max-height: 30px;
+  width: fit-content;
+  padding: 20px;
+}
+
+
+.chart-container {
+  margin-top: 3%;
+}

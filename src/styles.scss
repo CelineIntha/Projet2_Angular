@@ -1,7 +1,105 @@
+// Variables
+$primary-color: #02838F;
+$secondary-color: #d7eaec;
+
 body {
   font-family: 'Montserrat', sans-serif;
 }
 
+.bold {
+  font-weight: 900;
+}
+
+// Button styles
+.btn {
+  text-decoration: none;
+  margin-bottom: 50px;
+  font-weight: 600;
+  background-color: #085a85;
+  border: 1px solid #085a85;
+  color: #f3f2f2;
+  font-size: 0.8em;
+  padding: 12px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    cursor: pointer;
+    color: #085a85;
+    background-color: #f6f6f6;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Container
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+  padding: 20px;
+}
+
+// Main title styles
+.main-title {
+  display: flex;
+  align-items: center;
+  background-color: #02838F;
+  font-size: 2rem;
+  color: white;
+  padding: 16px;
+  font-weight: 400;
+  border-radius: 14px;
+  margin-bottom: 20px;
+
+  span {
+    margin-left: 6px;
+  }
+}
+
+// Box container and box styles
+.box-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+
+  .first-box,
+  .second-box,
+  .third-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 2px solid $primary-color;
+    min-height: 60px;
+    padding: 10px;
+    border-radius: 8px;
+    width: 190px;
+    text-align: center;
+
+    p {
+      margin: 0;
+      font-size: 1.125em;
+
+      &:last-child {
+        margin-top: 6px;
+        font-weight: bold;
+        font-size: 1.875em;
+      }
+    }
+  }
+}
+
+// Chart container
+.chart-container {
+  margin-top: 3%;
+}
+
+// Tooltip styles
 ngx-tooltip-content.ngx-charts-tooltip-content {
   background-color: #02838F !important;
   color: white !important;
@@ -17,16 +115,86 @@ ngx-tooltip-content.ngx-charts-tooltip-content .tooltip-caret.position-bottom {
   border-bottom-color: #02838F !important;
 }
 
-.tooltip {
-  font-size: 15px;
-  padding: 8px;
-
-  .tooltip .country-name {
-    font-size: 15px;
+// Responsive styles
+@media (max-width: 1024px) {
+  .main-title {
+    font-size: 1.5rem;
+    padding: 12px;
   }
 
-  .tooltip .medal-count {
-    font-size: 15px;
-    margin-left: 4px;
+  .box-container {
+    gap: 20px;
+  }
+
+  .first-box, .second-box, .third-box {
+    width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 1.5em;
+    padding: 12px;
+  }
+
+  .box-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .first-box,
+  .second-box,
+  .third-box {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    font-size: 0.875em;
+
+    p {
+      margin: 0;
+      font-size: 1em;
+
+      &:last-child {
+        margin-top: 4px;
+        font-weight: bold;
+        font-size: 1.5em;
+      }
+    }
+  }
+
+  .chart-container {
+    width: 100%;
+    padding: 10px;
+    margin-top: 2%;
+  }
+
+  .btn {
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 1.25em;
+    padding: 8px;
+  }
+
+  .btn {
+    font-size: 10px;
+    padding: 8px;
+  }
+
+  .box-container {
+    gap: 10px;
+  }
+
+  .first-box,
+  .second-box,
+  .third-box {
+    font-size: 0.75em;
   }
 }

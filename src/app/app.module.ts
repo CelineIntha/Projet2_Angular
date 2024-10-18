@@ -9,7 +9,7 @@ import {NotFoundComponent} from './pages/not-found/not-found.component';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {CountryDetailComponent} from './pages/country-detail/country-detail.component';
 import {FaIconLibrary, FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-import {faMedal} from "@fortawesome/free-solid-svg-icons";
+import {faChevronLeft, faMedal} from "@fortawesome/free-solid-svg-icons";
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, NotFoundComponent, CountryDetailComponent],
@@ -26,5 +26,6 @@ import {faMedal} from "@fortawesome/free-solid-svg-icons";
 export class AppModule {
   constructor(library: FaIconLibrary) {
     library.addIcons(faMedal);
+    library.addIcons(faChevronLeft);
   }
 }

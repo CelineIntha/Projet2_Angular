@@ -1,38 +1,50 @@
 <div class="container">
-    <button routerLink="/">Return to dashboard</button>
-    <h2>{{ countryName }}</h2>
-  
-    <div class="stats">
-      <div class="stat-box">
+  <button routerLink="/" class="btn"><i class="fas fa-chevron-left"></i> Return to dashboard</button>
+  <h1 class="main-title">Country :<span class="bold"> {{ countryName }}</span></h1>
+
+  @if (isLoading) {
+    <div class="loading">
+      <p>Chargement des données...</p>
+    </div>
+  }
+
+  @if ((errorMessage) && (isLoading)) {
+    <div class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+  } @else {
+    <div class="box-container">
+      <div class="first-box">
         <p>Number of entries</p>
         <p>{{ numberOfEntries }}</p>
       </div>
-      <div class="stat-box">
+      <div class="second-box">
         <p>Total number of medals</p>
         <p>{{ totalMedals }}</p>
       </div>
-      <div class="stat-box">
+      <div class="third-box">
         <p>Total number of athletes</p>
         <p>{{ totalAthletes }}</p>
       </div>
     </div>
-  
-    <div class="chart-container">
-        <ngx-charts-line-chart
-        [view]="view"
-        [scheme]="colorScheme"
-        [legend]="legend"
-        [showXAxisLabel]="showXAxisLabel"
-        [showYAxisLabel]="showYAxisLabel"
-        [xAxis]="xAxis"
-        [yAxis]="yAxis"
-        [xAxisLabel]="xAxisLabel"
-        [yAxisLabel]="yAxisLabel"
-        [timeline]="timeline"
-        [results]="lineChartData">
-      </ngx-charts-line-chart>
-      
-      </div>
-      
+  }
+
+
+  <div class="chart-container">
+    <ngx-charts-line-chart
+      [view]="view"
+      [scheme]="colorScheme"
+      [legend]="legend"
+      [showXAxisLabel]="showXAxisLabel"
+      [showYAxisLabel]="showYAxisLabel"
+      [xAxis]="xAxis"
+      [yAxis]="yAxis"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="yAxisLabel"
+      [timeline]="timeline"
+      [results]="lineChartData">
+    </ngx-charts-line-chart>
+
   </div>
-  
+
+</div>

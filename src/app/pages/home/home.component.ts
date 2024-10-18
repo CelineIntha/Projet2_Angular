@@ -1,10 +1,11 @@
 import {Component, OnDestroy, OnInit, HostListener, ViewEncapsulation} from '@angular/core';
-import {Subscription} from 'rxjs';
+import {of, Subscription} from 'rxjs';
 import {OlympicCountry} from 'src/app/core/models/Olympic';
 import {OlympicService} from 'src/app/core/services/olympic.service';
 import {Color, ScaleType} from '@swimlane/ngx-charts';
 import {Router} from '@angular/router';
 import {TooltipData} from "../../core/models/TooltipData";
+import {catchError} from "rxjs/operators";
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   olympics: OlympicCountry[] | null = null;
   totalJO: number = 0;
   totalCountries: number = 0;
+  errorMessage: string | null = null;
+  isLoading: boolean = true;
 
   pieChartData: { name: string, value: number }[] = [];
 
@@ -36,13 +39,27 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.view = this.getViewSize(window.innerWidth);
   }
 
-  ngOnInit() {
+ngOnInit() {
     this.subscription.add(
-      this.olympicService.getOlympics().subscribe(data => {
-        this.olympics = data;
-        this.calculateOlympicsData();
-        this.prepareChartData();
-      })
+      this.olympicService.getOlympics()
+        .pipe(
+          catchError(error => {
+            console.error('Erreur lors de la récupération des données olympiques:', error);
+            this.errorMessage = 'Impossible de charger les données des Jeux Olympiques. Veuillez réessayer plus tard.';
+            this.isLoading = false;
+            return of(null);
+          })
+        )
+        .subscribe(data => {
+          this.isLoading = false;
+          if (data) {
+            this.olympics = data;
+            this.calculateOlympicsData();
+            this.prepareChartData();
+          } else {
+            this.errorMessage = 'Impossible de charger les données des Jeux Olympiques. Veuillez réessayer plus tard.';
+          }
+        })
     );
   }
 
