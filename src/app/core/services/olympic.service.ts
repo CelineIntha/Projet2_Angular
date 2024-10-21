@@ -13,7 +13,6 @@ export class OlympicService {
 
   constructor(private http: HttpClient) {}
 
-  // Méthode pour charger les données depuis le fichier JSON
   loadInitialData(): Observable<OlympicCountry[] | null> {
     return this.http.get<OlympicCountry[]>(this.olympicUrl).pipe(
       tap((data) => this.olympics$.next(data)), // Met à jour les données du BehaviorSubject

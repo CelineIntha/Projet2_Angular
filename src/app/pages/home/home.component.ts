@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, HostListener, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, HostListener} from '@angular/core';
 import {of, Subscription} from 'rxjs';
 import {OlympicCountry} from 'src/app/core/models/Olympic';
 import {OlympicService} from 'src/app/core/services/olympic.service';
@@ -30,8 +30,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   view: [number, number];
 
-
-  // Subscription pour gérer les observables
   private subscription: Subscription = new Subscription();
 
   constructor(private olympicService: OlympicService, private router: Router) {
@@ -39,7 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.view = this.getViewSize(window.innerWidth);
   }
 
-ngOnInit() {
+  ngOnInit() {
     this.subscription.add(
       this.olympicService.getOlympics()
         .pipe(

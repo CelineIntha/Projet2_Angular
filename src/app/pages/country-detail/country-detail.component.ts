@@ -23,7 +23,6 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   isLoading: boolean = true
 
-  // Configuration des options pour le graphique
   lineChartData: LineChartData[] = [];
   view: [number, number] = [700, 400];
 
@@ -54,7 +53,6 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.view = this.getViewSize(window.innerWidth);
 
-    // Je m'abonne aux paramètres de la route pour récupérer le nom du pays
     const routeSubscription = this.route.params.subscribe((params) => {
       this.countryName = params['countryName'];
       this.loadCountryData(this.countryName);
@@ -62,56 +60,80 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
     this.subscription.add(routeSubscription);
   }
 
-loadCountryData(countryName: string) {
-  this.isLoading = true;
+  /**
+   * Charge les données d'un pays spécifique en utilisant le service Olympic.
+   *
+   * Cette méthode envoie une requête pour récupérer les données concernant
+   * tous les pays participants aux Jeux Olympiques. Une fois les données obtenues,
+   * elle extrait et met à jour les statistiques pour le pays sélectionné, incluant
+   * le total de médailles, le nombre d'entrées aux JO, et le total d'athlètes.
+   *
+   * Si le pays n'est pas trouvé dans les données, l'utilisateur est redirigé
+   * vers une page d'erreur 404, lui indiquant que le pays demandé n'existe pas
+   * dans les enregistrements.
+   *
+   * @param countryName - Le nom du pays dont les données doivent être chargées.
+   */
+  loadCountryData(countryName: string) {
+    this.isLoading = true;
 
-  const olympicsSubscription = this.olympicService.getOlympics().subscribe({
-    next: (olympicCountries: OlympicCountry[] | null) => {
-      this.isLoading = false;
-      if (olympicCountries) {
-        const selectedCountry = olympicCountries.find(country => country.country === countryName);
-        if (selectedCountry) {
-          this.totalMedals = this.calculateTotalMedals(selectedCountry);
-          this.numberOfEntries = selectedCountry.participations.length;
-          this.totalAthletes = this.calculateTotalAthletes(selectedCountry);
-          this.prepareLineChartData(selectedCountry);
+    const olympicsSubscription = this.olympicService.getOlympics().subscribe({
+      next: (olympicCountries: OlympicCountry[] | null) => {
+        this.isLoading = false;
+        if (olympicCountries) {
+          const selectedCountry = olympicCountries.find(country => country.country === countryName);
+          if (selectedCountry) {
+            this.totalMedals = this.calculateTotalMedals(selectedCountry);
+            this.numberOfEntries = selectedCountry.participations.length;
+            this.totalAthletes = this.calculateTotalAthletes(selectedCountry);
+            this.prepareLineChartData(selectedCountry);
+          } else {
+            console.error(`Aucune donnée trouvée pour le pays: ${countryName}`);
+            this.router.navigate(['/404']);
+          }
         } else {
-          console.error(`Aucune donnée trouvée pour le pays: ${countryName}`);
-          this.router.navigate(['/404']);
+          this.errorMessage = 'Erreur lors du chargement des données.';
         }
-      } else {
-        this.errorMessage = 'Erreur lors du chargement des données.';
+      },
+      error: (error: HttpErrorResponse) => {
+        this.isLoading = false;
+        console.error('Erreur lors de la récupération des données:', error);
+        if (error.status === 404) {
+          this.errorMessage = `Le pays ${countryName} n'existe pas.`;
+        } else {
+          this.errorMessage = 'Impossible de charger les données. Veuillez réessayer.';
+        }
+      },
+      complete: () => {
+        console.log('Chargement des données terminé.');
       }
-    },
-    error: (error: HttpErrorResponse) => {
-      this.isLoading = false;
-      console.error('Erreur lors de la récupération des données:', error);
-      if (error.status === 404) {
-        this.errorMessage = `Le pays ${countryName} n'existe pas.`;
-      } else {
-        this.errorMessage = 'Impossible de charger les données. Veuillez réessayer.';
-      }
-    },
-    complete: () => {
-      console.log('Chargement des données terminé.');
-    }
-  });
+    });
 
-  this.subscription.add(olympicsSubscription);
-}
+    this.subscription.add(olympicsSubscription);
+  }
 
-
-  // Méthode pour calculer le total des médailles
+  /**
+   * C'est une méthode qui permet de calculer le nombre total de médailles gagnées par un pays.
+   * @param country - Le pays dont on souhaite connaître le total des médailles.
+   * @returns Le nombre total de médailles.
+   */
   calculateTotalMedals(country: OlympicCountry): number {
     return country.participations.reduce((total, participation) => total + participation.medalsCount, 0);
   }
 
-  // Méthode pour calculer le total des athlètes
+  /**
+   * C'est une méthode qui permet de calculer le nombre total d'athlètes pour un pays.
+   * @param country - Le pays dont on souhaite connaître le nombre total d'athlètes.
+   * @returns Le nombre total d'athlètes.
+   */
   calculateTotalAthletes(country: OlympicCountry): number {
     return country.participations.reduce((total, participation) => total + participation.athleteCount, 0);
   }
 
-  // Préparation des données pour le graphique
+  /**
+   * C'est une méthode qui permet de préparer les données du graphique linéaire pour chaque pays.
+   * @param countryData - Les données du pays sélectionné.
+   */
   prepareLineChartData(countryData: OlympicCountry) {
     const lineData = countryData.participations.map((participation: Participation) => {
       return {
@@ -120,7 +142,6 @@ loadCountryData(countryName: string) {
       };
     });
 
-    // Todo: Enlever légende
     this.lineChartData = [
       {
         name: this.countryName,
@@ -129,19 +150,29 @@ loadCountryData(countryName: string) {
     ];
   }
 
-  // Capture l'événement de redimensionnement de la fenêtre et ajuste la taille du graphique
+  /**
+   * Gestionnaire d'événement pour ajuster la taille du graphique lorsque la fenêtre est redimensionnée.
+   * Il met à jour la propriété `view` en fonction de la nouvelle taille de l'écran.
+   * Utilise un décorateur `HostListener` pour écouter l'événement de redimensionnement de la fenêtre.
+   * @param event - L'événement de redimensionnement contenant la nouvelle taille de la fenêtre.
+   */
   @HostListener('window:resize', ['$event'])
   onResize(event: Event) {
     const target = event.target as Window;
     this.view = this.getViewSize(target.innerWidth); // Je mets à jour la line chart
   }
 
+  /**
+   * Méthode privée pour obtenir la taille de la vue en fonction de la largeur de la fenêtre.
+   * Renvoie un tuple contenant la largeur et la hauteur du graphique.
+   * @param width - La largeur actuelle de la fenêtre du navigateur.
+   * @returns Un tableau avec la largeur et la hauteur du graphique [width, height].
+   */
   private getViewSize(width: number): [number, number] {
     return width <= 768 ? [420, 420] : [700, 400];
   }
 
   ngOnDestroy(): void {
-    // Je me désabonne de tous les abonnements
     this.subscription.unsubscribe();
   }
 }
