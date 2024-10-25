@@ -33,7 +33,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
   constructor(private olympicService: OlympicService, private router: Router) {
-    // Définit la taille initiale du graphique en fonction de la taille de la fenêtre du navigateur
     this.view = this.getViewSize(window.innerWidth);
   }
 
@@ -88,7 +87,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
       });
 
-      // La taille de l'ensemble correspond au nombre total d'années uniques
       this.totalJO = uniqueYears.size;
     }
   }

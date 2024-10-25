@@ -23,15 +23,7 @@
       </div>
     </div>
     <!-- Pie Chart -->
-    <ngx-charts-pie-chart
-      (select)="onSelect($event)"
-      [doughnut]="false"
-      [labels]="true"
-      [legend]="false"
-      [results]="pieChartData"
-      [tooltipText]="customTooltipData"
-      [scheme]="colorScheme"
-      [view]="view">
+    <ngx-charts-pie-chart (select)="onSelect($event)" [doughnut]="false" [labels]="true" [legend]="false" [results]="pieChartData" [tooltipText]="customTooltipData" [scheme]="colorScheme" [view]="view">
     </ngx-charts-pie-chart>
   }
 

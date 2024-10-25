@@ -9,16 +9,16 @@ import { OlympicCountry } from '../models/Olympic';
 })
 export class OlympicService {
   private olympicUrl = './assets/mock/olympic.json';
-  private olympics$ = new BehaviorSubject<OlympicCountry[] | null>(null); // BehaviorSubject pour stocker les données
+  private olympics$ = new BehaviorSubject<OlympicCountry[] | null>(null);
 
   constructor(private http: HttpClient) {}
 
   loadInitialData(): Observable<OlympicCountry[] | null> {
     return this.http.get<OlympicCountry[]>(this.olympicUrl).pipe(
-      tap((data) => this.olympics$.next(data)), // Met à jour les données du BehaviorSubject
+      tap((data) => this.olympics$.next(data)),
       catchError((error) => {
         console.error('Erreur lors du chargement des données :', error);
-        this.olympics$.next(null); // Indique une erreur
+        this.olympics$.next(null);
         return of(null);
       })
     );

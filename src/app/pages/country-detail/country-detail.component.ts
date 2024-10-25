@@ -81,7 +81,7 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
       next: (olympicCountries: OlympicCountry[] | null) => {
         this.isLoading = false;
         if (olympicCountries) {
-          const selectedCountry = olympicCountries.find(country => country.country === countryName);
+          const selectedCountry = olympicCountries.find(ct => ct.country === countryName);
           if (selectedCountry) {
             this.totalMedals = this.calculateTotalMedals(selectedCountry);
             this.numberOfEntries = selectedCountry.participations.length;
@@ -114,11 +114,11 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
 
   /**
    * C'est une méthode qui permet de calculer le nombre total de médailles gagnées par un pays.
-   * @param country - Le pays dont on souhaite connaître le total des médailles.
+   * @param ct - Le pays dont on souhaite connaître le total des médailles.
    * @returns Le nombre total de médailles.
    */
-  calculateTotalMedals(country: OlympicCountry): number {
-    return country.participations.reduce((total, participation) => total + participation.medalsCount, 0);
+  calculateTotalMedals(ct: OlympicCountry): number {
+    return ct.participations.reduce((total, participation) => total + participation.medalsCount, 0);
   }
 
   /**
