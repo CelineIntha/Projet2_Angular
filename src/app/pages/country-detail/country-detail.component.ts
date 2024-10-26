@@ -118,7 +118,7 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
    * @returns Le nombre total de médailles.
    */
   calculateTotalMedals(ct: OlympicCountry): number {
-    return ct.participations.reduce((total, participation) => total + participation.medalsCount, 0);
+    return ct.participations.reduce((total: number, participation: Participation) => total + participation.medalsCount, 0);
   }
 
   /**
@@ -127,7 +127,7 @@ export class CountryDetailComponent implements OnInit, OnDestroy {
    * @returns Le nombre total d'athlètes.
    */
   calculateTotalAthletes(country: OlympicCountry): number {
-    return country.participations.reduce((total, participation) => total + participation.athleteCount, 0);
+    return country.participations.reduce((total: number, participation: Participation) => total + participation.athleteCount, 0);
   }
 
   /**

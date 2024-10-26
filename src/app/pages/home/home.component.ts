@@ -6,6 +6,8 @@ import {Color, ScaleType} from '@swimlane/ngx-charts';
 import {Router} from '@angular/router';
 import {TooltipData} from "../../core/models/TooltipData";
 import {catchError} from "rxjs/operators";
+import {HttpErrorResponse} from "@angular/common/http";
+import {Participation} from "../../core/models/Participation";
 
 @Component({
   selector: 'app-home',
@@ -40,7 +42,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.olympicService.getOlympics()
         .pipe(
-          catchError(error => {
+          catchError((error: HttpErrorResponse) => {
             console.error('Erreur lors de la récupération des données olympiques:', error);
             this.errorMessage = 'Impossible de charger les données des Jeux Olympiques. Veuillez réessayer plus tard.';
             this.isLoading = false;
@@ -97,11 +99,11 @@ export class HomeComponent implements OnInit, OnDestroy {
    * qu'il a gagné, puis formate les données pour qu'elles soient compatibles avec
    * ngx-charts.
    */
-  prepareChartData() {
+  prepareChartData(): void {
     if (this.olympics) {
       this.pieChartData = this.olympics.map(country => {
-        const totalMedalsForCountry = country.participations.reduce(
-          (totalMedals, participation) => totalMedals + participation.medalsCount,
+        const totalMedalsForCountry: number = country.participations.reduce(
+          (totalMedals: number, participation: Participation) => totalMedals + participation.medalsCount,
           0
         );
 
@@ -120,7 +122,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    * avec le nom du pays.
    */
   onSelect(event: { name: string }): void {
-    const countryName = event.name;
+    const countryName: string = event.name;
     this.router.navigate(['/country', countryName]);
   }
 
